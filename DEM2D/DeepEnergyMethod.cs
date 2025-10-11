@@ -12,10 +12,10 @@ using static TorchSharp.torch.optim;
 
 namespace DEM2D
 {
-    public class FlexibleDeepEnergyPINN : IDisposable
+    public class DeepEnergyMethod : IDisposable
     {
         private readonly DisposeScope disposeScope; 
-        public FlexibleDeepEnergyPINN((double Length,double Height) domain_size, (int Length, int Height) num_points,double E,double nu)
+        public DeepEnergyMethod((double Length,double Height) domain_size, (int Length, int Height) num_points,double E,double nu)
         {
             disposeScope = NewDisposeScope();
             Domain_Size = domain_size;

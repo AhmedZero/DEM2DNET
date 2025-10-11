@@ -15,7 +15,7 @@ namespace DEM2D
             var num_points = (30, 10);
             var E = 1e5;
             var nu = 0.3;
-            using var pinn = new FlexibleDeepEnergyPINN(domain_size, num_points, E, nu);
+            using var pinn = new DeepEnergyMethod(domain_size, num_points, E, nu);
             static Tensor ZeroDisplacement(Tensor x, Tensor y) => zeros_like(x);
             pinn.SetBoundaryCondition(
             [
