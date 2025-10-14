@@ -1,15 +1,6 @@
-﻿using ScottPlot.Plottables;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TorchSharp;
-using TorchSharp.Modules;
-using static Tensorboard.TensorShapeProto.Types;
+﻿using TorchSharp;
 using static TorchSharp.torch;
 using static TorchSharp.torch.optim;
-using static TorchSharp.torch.nn;
 
 namespace DEM2D
 {
@@ -62,7 +53,7 @@ namespace DEM2D
 
             var outputs = new[] { u, u, v, v };
             var inputs = new[] { x, y, x, y };
-            var grad_outputs = new[] { torch.ones_like(u), torch.ones_like(u), torch.ones_like(v), torch.ones_like(v) };
+            var grad_outputs = new[] { ones_like(u), ones_like(u), ones_like(v), ones_like(v) };
 
             var gradients = autograd.grad(outputs, inputs, grad_outputs, retain_graph: true, create_graph: true);
 
