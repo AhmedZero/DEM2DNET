@@ -28,7 +28,7 @@ namespace DEM2D
             MeshGrid = meshgrid([x, y]);
             xy = stack([MeshGrid[0].flatten(), MeshGrid[1].flatten()], dim : 1);
             model = new FFNN([2,128,128,128,2]);
-            optimizer = Adam(model.parameters(), lr: 0.0001);
+            optimizer = AdamW(model.parameters(), lr: 0.0001);
 
 
 
