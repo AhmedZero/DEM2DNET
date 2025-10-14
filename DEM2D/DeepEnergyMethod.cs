@@ -9,6 +9,7 @@ using TorchSharp.Modules;
 using static Tensorboard.TensorShapeProto.Types;
 using static TorchSharp.torch;
 using static TorchSharp.torch.optim;
+using static TorchSharp.torch.nn;
 
 namespace DEM2D
 {
@@ -26,7 +27,7 @@ namespace DEM2D
             y = linspace(0, domain_size.Height, num_points.Height, requires_grad: true);
             MeshGrid = meshgrid([x, y]);
             xy = stack([MeshGrid[0].flatten(), MeshGrid[1].flatten()], dim : 1);
-            model = new FFNN(2, 128, 2);
+            model = new FFNN([2,128,128,128,2]);
             optimizer = Adam(model.parameters(), lr: 0.0001);
 
 
@@ -160,10 +161,7 @@ namespace DEM2D
             for (int epoch = 0; epoch < num_epochs; epoch++)
             {
                 using var d = NewDisposeScope();
-                optimizer.zero_grad();
-                var loss = DEMPinnLoss();
-                loss.backward();
-                optimizer.step();
+                var loss = optimizer.step(Closures);
                 if (epoch % 100 == 0)
                 {
                     Console.WriteLine($"Epoch {epoch}, Loss: {loss.item<float>()}");
@@ -171,6 +169,15 @@ namespace DEM2D
             }
 
         }
+
+        private Tensor Closures()
+        {
+            optimizer.zero_grad();
+            var loss = DEMPinnLoss();
+            loss.backward();
+            return loss;
+        }
+
         public (Tensor, Tensor) GetDisplacement()
         {
             using var d = NewDisposeScope();

@@ -13,25 +13,29 @@ namespace DEM2D
 {
     public class FFNN : Module<Tensor, Tensor>
     {
-        private readonly Linear layer1;
-        private readonly Linear layer2;
-        private readonly Linear layer3;
+        private readonly List<Module<Tensor, Tensor>> layers;
 
-        public FFNN(int input_dim, int hidden_dim, int output_dim) : base("FFNN")
+        public FFNN(params int[] layer_param) : base("FFNN")
         {
-            layer1 = Linear(input_dim, hidden_dim);
-            layer2 = Linear(hidden_dim, hidden_dim);
-            layer3 = Linear(hidden_dim, output_dim);
-            RegisterComponents();
-          
+            layers = [];
+            for (int i = 0; i < layer_param.Length - 1; i++)
+            {
+                var layer = Linear(layer_param[i], layer_param[i + 1]);
+                layers.Add(layer);
+                register_module("layer" + i, layer);
+
+            }
+
         }
      
         public override Tensor forward(Tensor input)
         {
-            var x = tanh(layer1.forward(input));
-            x = tanh(layer2.forward(x));
-            x = layer3.forward(x);
-            return x;
+            for (int i = 0; i < layers.Count - 1; i++)
+            {
+                input = tanh(layers[i].forward(input));
+            }
+            input = layers.Last().forward(input);
+            return input;
         }
     }
 }
